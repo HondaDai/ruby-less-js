@@ -18,7 +18,8 @@ Fixed Version
 	git clone https://github.com/HondaDai/ruby-less-js.git
 	cd ruby-less-js
 	gem build ruby-less-js.gemspec
-	gem install ruby-less-js-0.1.1
+	gem install less-js-0.1.1
+	gem install less-js-source
 
 
 Dependencies
