@@ -1,4 +1,5 @@
 require 'execjs'
+require 'pathname'
 require 'less_js/source'
 
 module LessJs
@@ -22,8 +23,14 @@ module LessJs
       @version ||= contents[/LESS - Leaner CSS v([\d.]+)/, 1]
     end
 
-    def self.context
-      @context ||= ExecJS.compile <<-EOS
+    def self.fixed_contents
+      <<-EOS
+        var jsdom = require('#{Pathname.pwd.to_s}/node_modules/jsdom').jsdom;
+        var document = jsdom("<html><body></body></html>");
+        var window = document.createWindow();
+        var location = {href: "", protocol: "http", host: "", port: ""};
+        var less = window.less = {};
+        
         #{contents}
 
         function compile(data) {
@@ -33,7 +40,13 @@ module LessJs
           });
           return result;
         }
+        
       EOS
+    end
+
+    def self.context
+      
+      @context ||= ExecJS.compile(fixed_contents)
     end
   end
 
