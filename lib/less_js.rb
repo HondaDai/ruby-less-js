@@ -54,8 +54,8 @@ module LessJs
     end
 
     def self.context
-      
-      @context ||= ExecJS.compile(fixed_contents)
+      #@context ||= ExecJS.compile(fixed_contents)
+      @context ||= ExecJS::Runtimes::Node.compile(fixed_contents)
     end
   end
 
