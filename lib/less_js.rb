@@ -1,11 +1,12 @@
 require 'execjs'
-require 'pathname'
 require 'less_js/source'
+require 'pathname'
 
 module LessJs
   class ParseError < StandardError; end
 
   module Source
+
     def self.path
       @path ||= ENV['LESSJS_SOURCE_PATH'] || bundled_path
     end
@@ -13,6 +14,14 @@ module LessJs
     def self.path=(path)
       @contents = @version = @context = nil
       @path = path
+    end
+
+    def self.jsdom_path
+      @jsdom_path ||= Pathname.new(__FILE__).join("..", "..", "vender", "node_modules", "jsdom").realpath.to_s
+    end
+
+    def self.jsdom_path=(path)
+      @jsdom_path = path
     end
 
     def self.contents
@@ -25,7 +34,7 @@ module LessJs
 
     def self.fixed_contents
       <<-EOS
-        var jsdom = require('#{Pathname.pwd.to_s}/node_modules/jsdom').jsdom;
+        var jsdom = require('#{jsdom_path}').jsdom;
         var document = jsdom("<html><body></body></html>");
         var window = document.createWindow();
         var location = {href: "", protocol: "http", host: "", port: ""};
